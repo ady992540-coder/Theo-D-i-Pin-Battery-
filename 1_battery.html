@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>1. Theo Dõi Pin (Battery)</title>
+    <style>body { font-family: sans-serif; padding: 20px; }</style>
+</head>
+<body>
+    <h1>🔋 1. Theo Dõi Pin (Battery Status)</h1>
+    <p>Facebook có thể biết bạn còn bao nhiêu % pin và có đang sạc hay không.</p>
+    
+    <div id="status" style="border: 1px solid #ccc; padding: 10px; background: #f9f9f9;">
+        Đang tải thông tin pin...
+    </div>
+
+    <script>
+        // API này hoạt động tốt trên Chrome/Edge/Android. (Firefox đã bỏ vì lý do bảo mật)
+        navigator.getBattery().then(function(battery) {
+            function updateAllBatteryInfo(){
+                updateChargeInfo();
+                updateLevelInfo();
+            }
+            updateAllBatteryInfo();
+
+            // Lắng nghe sự kiện khi sạc hoặc rút sạc
+            battery.addEventListener('chargingchange', function(){
+                updateChargeInfo();
+            });
+            // Lắng nghe sự kiện khi % pin thay đổi
+            battery.addEventListener('levelchange', function(){
+                updateLevelInfo();
+            });
+
+            function updateChargeInfo(){
+                const statusDiv = document.getElementById('status');
+                const chargingStatus = battery.charging ? "⚡ Đang cắm sạc" : "🔋 Đang dùng pin";
+                console.log("Trạng thái sạc: " + chargingStatus);
+                document.getElementById('charge-status').innerText = chargingStatus;
+            }
+
+            function updateLevelInfo(){
+                const level = (battery.level * 100).toFixed(0) + "%";
+                console.log("Dung lượng pin: " + level);
+                document.getElementById('level-status').innerText = level;
+            }
+        });
+    </script>
+    
+    <h3>Kết quả:</h3>
+    <ul>
+        <li>Trạng thái: <b id="charge-status">...</b></li>
+        <li>Dung lượng: <b id="level-status">...</b></li>
+    </ul>
+</body>
+</html>
